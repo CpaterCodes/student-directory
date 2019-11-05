@@ -16,12 +16,22 @@ villains = [ "Dr. Hannibal Lecter",
   "Norman Bates"
 ]
 #Title and head divider
-puts "Villians of this here Villain Academy, assembled!"
-puts "~|------------------------------------------------|~"
+def print_header
+  puts "Villians of this here Villain Academy, assembled!"
+  puts "~|------------------------------------------------|~"
+end
 #Presenting our students!
-villains.each { |v| puts v}
-#And now to state the number of students,
-#which is the length of the villains array!
-puts "Overall, we have #{villains.length} dastardly students!"
-#Footer, for style purposes!
-puts "~|------------------------------------------------|~"
+
+def print_list(ls)
+  ls.each { |v| puts v }
+end
+
+#Footer, for style purposes! Array length, for student count!
+def footer(ls)
+  puts "Overall, we have #{ls.length} dastardly students!"
+  puts "~|------------------------------------------------|~"
+end
+
+print_header
+print_list(villains)
+footer(villains)
