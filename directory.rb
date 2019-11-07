@@ -15,6 +15,7 @@ villains = [
   {name: "Joffrey Baratheon", month: :november},
   {name: "Daenerys Targaryen", month: :november},
   {name: "Norman Bates", month: :november} ]
+
 #Title and head divider
 def print_header
   puts "Villians of the Villain Academy, assemble!"
@@ -35,6 +36,22 @@ def footer(ls)
   puts "~|------------------------------------------------|~"
 end
 
+#But what if we want to add students?
+def add_student(ls)
+  puts "Enter all new Villains you require."
+  puts "Press return when you are finished."
+  #Add a name if desired, and then keep adding names if desired
+  name = gets.chomp
+  until name.empty?
+    ls << {name: name, month: :november}
+    #Update the user, and ask for the next name. Hit return to stop.
+    puts "#{name} added, now there are #{ls.length} students total!"
+    puts "Type a name to add another student or press return to stop."
+    name = gets.chomp
+  end
+end
+
 print_header
 print_list(villains)
 footer(villains)
+add_student(villains)
