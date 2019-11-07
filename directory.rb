@@ -18,40 +18,62 @@ villains = [
 
 #Title and head divider
 def print_header
-  puts "Villians of the Villain Academy, assemble!"
+  puts "Villains of the Academy, assemble!"
   puts "~|------------------------------------------------|~"
 end
 #Presenting our students!
 
-def print_list(ls)
-  ls.each do |vl|
-    puts "#{vl[:name]} (#{vl[:month]} cohort)"
+def print_list(list)
+  list.each_with_index do |villain,number|
+    puts "#{number}:#{villain[:name]} (#{villain[:month]} cohort)" unless list.empty?
   end
+    puts "Nothing to see here :/" if list.empty?
 end
 
 #Footer, for style purposes! Array length, for student count!
-def footer(ls)
-  puts " "
-  puts "Overall, we have #{ls.length} dastardly students!"
+def footer(list)
+  unless list.empty?
+    puts " "
+    puts "Overall, we have #{list.length} dastardly students!"
+  end
   puts "~|------------------------------------------------|~"
 end
 
 #But what if we want to add students?
-def add_student(ls)
+def add_student(list)
   puts "Enter all new Villains you require."
   puts "Press return when you are finished."
   #Add a name if desired, and then keep adding names if desired
   name = gets.chomp
   until name.empty?
-    ls << {name: name, month: :november}
+    list << {name: name, month: :november}
     #Update the user, and ask for the next name. Hit return to stop.
-    puts "#{name} added, now there are #{ls.length} students total!"
+    puts "#{name} added, now there are #{list.length} students total!"
     puts "Type a name to add another student or press return to stop."
     name = gets.chomp
   end
 end
 
-print_header
-print_list(villains)
-footer(villains)
-add_student(villains)
+def menu_interactive(list)
+  puts "Welcome to the directory!"
+  loop do
+    puts "What do you wish to do?"
+    puts "----------------------"
+    puts "Read | Add students | Exit"
+    choice = gets.chomp
+    case choice
+    when "Read"
+    print_header
+    print_list(list)
+    footer(list)
+    when "Add students"
+    add_student(list)
+    when "Exit"
+      break
+    else
+      nil
+    end
+  end
+end
+
+menu_interactive(villains)
