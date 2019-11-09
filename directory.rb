@@ -46,14 +46,24 @@ def add_student
 end
 
 def save_students
-  directory = File.open("Villains.csv", "w")
+  file = File.open("Villains.csv", "w")
   @villains.each do |vil|
     villain_data = [vil[:name], vil[:month]]
     villain_row = villain_data.join(", ")
-    directory.puts villain_row
+    file.puts villain_row
   end
-  directory.close
+  file.close
 end
+
+def load_students
+ file = File.open("Villains.csv", "r")
+ file.readlines.each do |vil|
+   name, month = vil.chomp.split(", ")
+   @villains << {name: name, month: month.to_sym}
+ end
+ file.close
+end
+
 
 def interactive_menu
   #Introduce the program and menu
@@ -61,9 +71,9 @@ def interactive_menu
   #Ask user what they wish to do, perform it, and ask again
   #until 'exit' is chosen
   loop do
-    puts "What do you wish to do?"
+    puts "What do you wish to do? Enter the number of your desired action"
     puts "----------------------"
-    puts "1:List students | 2:Add students | 3:Save changes | 9:Exit"
+    puts "1:List students | 2:Add | 3:Save | 4:Load | 9:Exit"
     choice = gets.chomp
     case choice
     #Print the directory if user asks to list students
@@ -74,8 +84,12 @@ def interactive_menu
     #Run the procedure for adding students if user asks to add students
     when "2"
       add_student
+    #Save the directory of students the user has created to a file, Villains.csv
     when "3"
       save_students
+    #Load the student directory previously saved.
+    when "4"
+      load_students
     #Exit the program by breaking the loop if users asks to exit
     when "9"
       break
