@@ -1,7 +1,6 @@
 #Our list of villainous students, of studious villains!
 @villains = []
 
-
 #Title and head divider
 def print_header
   puts "Villains of the Academy, assemble!"
@@ -35,16 +34,17 @@ def add_student
   puts "Enter all new Villains you require."
   puts "Press return without entering another name to finish."
   #Add a name if desired, and then keep adding names if desired
-  name = gets.chomp
+  name = STDIN.gets.chomp
   until name.empty?
     @villains << {name: name, month: :november}
     #Update the user, and ask for the next name. Hit return to stop.
     puts "#{name} added, we have #{@villains.length} student#{plural} total!"
     puts "Type a name to add another student or press return to stop."
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
 end
 
+#Or save?
 def save_students
   file = File.open("Villains.csv", "w")
   @villains.each do |vil|
@@ -55,8 +55,10 @@ def save_students
   file.close
 end
 
-def load_students
- file = File.open("Villains.csv", "r")
+#And then load?
+def load_students(filename = "Villains.csv")
+ @villains = [] #Empties current loaded content, prevents conjoining
+ file = File.open(filename, "r")
  file.readlines.each do |vil|
    name, month = vil.chomp.split(", ")
    @villains << {name: name, month: month.to_sym}
@@ -64,6 +66,20 @@ def load_students
  file.close
 end
 
+#... from the command line?
+def command_line_load
+  cmdfile = ARGV.first #Takes the first/only argument given, the file's name
+  return if cmdfile.nil?
+  if File.exists?(cmdfile)
+    load_students(cmdfile)
+  puts "-----------------------------------------------------------------------"
+  puts "Using directory from #{cmdfile}. Contains #{@villains.length} students."
+  puts "-----------------------------------------------------------------------"
+  else
+   puts "#{cmdfile} non-existent. My deepest condolences."
+   exit
+  end
+end
 
 def interactive_menu
   #Introduce the program and menu
@@ -74,7 +90,7 @@ def interactive_menu
     puts "What do you wish to do? Enter the number of your desired action"
     puts "----------------------"
     puts "1:List students | 2:Add | 3:Save | 4:Load | 9:Exit"
-    choice = gets.chomp
+    choice = STDIN.gets.chomp
     case choice
     #Print the directory if user asks to list students
     when "1"
@@ -90,13 +106,13 @@ def interactive_menu
     #Load the student directory previously saved.
     when "4"
       load_students
-    #Exit the program by breaking the loop if users asks to exit
     when "9"
-      break
+      break #Exits the program by breaking the loop
     else
       nil
     end
   end
 end
 
+command_line_load
 interactive_menu
