@@ -28,7 +28,7 @@ end
 def print_list
   @villains.each_with_index do |v,n|
     unless @villains.empty?
-      row = "#{n + 1}-#{v[:name]} (#{v[:month]} cohort) #{v[:height]}cm"
+      row = "#{n + 1}:#{v[:name]} (#{v[:month]} cohort) #{v[:height]}cm"
       puts row.center(66)
     end
   end
@@ -37,7 +37,8 @@ end
 #Only prints names starting with a specific letter (task 2)
 def print_by_letter
   puts " "
-  letter = gets.chomp.upcase
+  letter = STDIN.gets.chomp.upcase
+  print_header
   @villains.each_with_index do |v,n|
     unless v[:name][0].upcase != letter
       puts "#{n + 1}-#{v[:name]} (#{v[:month]} cohort) #{v[:height]}cm".center(66)
@@ -66,7 +67,7 @@ def print_cohorts
     month = @cohorts[i]
     @villains.each_with_index do |vl,n|
       unless @villains.empty?
-        row = "#{n + 1}-#{vl[:name]} (#{vl[:month]} cohort) #{vl[:height]}cm"
+        row = "#{n + 1}:#{vl[:name]} (#{vl[:month]} cohort) #{vl[:height]}cm"
         puts row.center(66) unless vl[:month] != month
       end
     end
