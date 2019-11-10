@@ -9,8 +9,8 @@ end
 #Presenting our students!
 
 def print_list
-  @villains.each_with_index do |vil,n|
-    puts "#{n}:#{vil[:name]} (#{vil[:month]} cohort)" unless @villains.empty?
+  @villains.each_with_index do |vl,n|
+    puts "#{n + 1}:#{vl[:name]} (#{vl[:month]} cohort)" unless @villains.empty?
   end
     puts "Nothing to see here :/" if @villains.empty?
 end
@@ -69,15 +69,17 @@ end
 #... from the command line?
 def command_line_load
   cmdfile = ARGV.first #Takes the first/only argument given, the file's name
-  return if cmdfile.nil?
+  return if cmdfile.nil? #Aborts and skips to menu method if no name given
   if File.exists?(cmdfile)
     load_students(cmdfile)
   puts "-----------------------------------------------------------------------"
   puts "Using directory from #{cmdfile}. Contains #{@villains.length} students."
   puts "-----------------------------------------------------------------------"
   else
+   puts "------------------------------------------------"
    puts "#{cmdfile} non-existent. My deepest condolences."
-   exit
+   puts "------------------------------------------------"
+   exit #Exists the program if the file named does not exist
   end
 end
 
