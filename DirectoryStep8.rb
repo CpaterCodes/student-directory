@@ -1,64 +1,80 @@
 #This version of the directory file is meant as a test of various additional
 #exercises from step 8 of the directory project. I have chosen to test
 #a couple of different exercises with each of these new methods.
-
+#(Task 11 can be found at TypoCorrections.rb)
 #Our list of villainous students, of studious villains!
 @villains = []
 
+#For all month-keeping purposes! (tasks 7 and 8)
+require 'time'
+@default_month = "#{Time.now}".split('-')[1].to_i
+
+@cohorts = [:january, :february, :march, :april, :may, :june, :july,
+:august, :september, :october, :november, :december]
+
 #Title and head divider
 def print_header
-  puts "Villains of the Academy, assemble!"
-  puts "~|------------------------------------------------|~"
+  puts "Villains of the Academy, assemble!".center(66)
+  puts "~|---------------------------------------------------------------|~"
 end
+
+#A bit of code for when the list is empty (task 12)
+def empty_list
+  puts "Nothing to see here :/".center(66) if @villains.empty?
+end
+
 #Presenting our students!
 #List printing, now with height, index, and centering (tasks 1, 5 and 6)
 def print_list
-  @villains.each_with_index do |vl,n|
+  @villains.each_with_index do |v,n|
     unless @villains.empty?
-      row = "#{n + 1}-#{vl[:name]} (#{vl[:month]} cohort), #{vl[:height]}cm"
-      puts row.center(50)
+      row = "#{n + 1}-#{v[:name]} (#{v[:month]} cohort) #{v[:height]}cm"
+      puts row.center(66)
     end
   end
 end
 
 #Only prints names starting with a specific letter (task 2)
 def print_by_letter
-  puts "Type a starting letter to select names by."
-  letter = gets.delete("\n").upcase
-  @villains.each_with_index do |vl,n|
-    unless @villains.empty? || vl[:name][0].upcase != letter
-      puts "#{n + 1}-#{vl[:name]} (#{vl[:month]} cohort), #{vl[:height]}cm"
+  puts " "
+  letter = gets.chomp.upcase
+  @villains.each_with_index do |v,n|
+    unless v[:name][0].upcase != letter
+      puts "#{n + 1}-#{v[:name]} (#{v[:month]} cohort) #{v[:height]}cm".center(66)
     end
   end
 end
 
-#Only print names shorter than 12 characters, using until (tasks 3 and 4)
+#Only print names shorter than 12 characters, with until loop (tasks 3 and 4)
 def print_short
   v = @villains #This shortens the subsequent code
-  n = 1 #Our counter, so our until loop knows when to stop
-  until n == v.length
-    unless v.empty?
-      i = n - 1
-      row = "#{n}-#{v[i][:name]},(#{v[i][:month]} cohort), #{v[i][:height]}cm"
-      puts row if v[i][:name].length < 12
-    end
-    n += 1
-  end
-end
-
-#Printing by cohort!
-def print_cohort
-  puts "enter a month"
-  month = gets.delete("\n").to_sym
-  @villains.each_with_index do |vl,n|
-    unless @villains.empty?
-      row = "#{n + 1}-#{vl[:name]} (#{vl[:month]} cohort), #{vl[:height]}cm"
-      puts row unless vl[:month] != month
+  i = 0 #Our counter, so our until loop knows when to stop
+  unless v.empty?
+    until i == v.length
+      n = i + 1 #This is for our index
+      row = "#{n}:#{v[i][:name]} (#{v[i][:month]} class) #{v[i][:height]}cm"
+      puts row.center(66) if v[i][:name].length < 12
+      i += 1
     end
   end
 end
 
-#Code to ensure proper singular vs plural use (step 8, task 9)
+#Printing, sorted by cohort! (task 8)
+def print_cohorts
+  i = 0
+  until i == 12
+    month = @cohorts[i]
+    @villains.each_with_index do |vl,n|
+      unless @villains.empty?
+        row = "#{n + 1}-#{vl[:name]} (#{vl[:month]} cohort) #{vl[:height]}cm"
+        puts row.center(66) unless vl[:month] != month
+      end
+    end
+    i += 1
+  end
+end
+
+#Code to ensure proper singular vs plural use (task 9)
 def plural
   return @villains.length > 1 ? 's' : ''
 end
@@ -67,21 +83,28 @@ end
 def footer
   unless @villains.empty?
     puts " "
-    puts "Overall, we have #{@villains.length} dastardly student#{plural}!"
+    ln = "Overall, we have #{@villains.length} dastardly student#{plural}!"
+    puts ln.center(66)
   end
-  puts "~|------------------------------------------------|~"
+  puts "~|-------------------------------------------------------------|~"
 end
 
 #But what if we want to add students? Now with cohort! (Task 7)
 def add_student
   puts "For each new villain, first enter a name and press enter."
-  puts "Second, enter the month of their cohort."
-  puts "Third, enter a height(cm) and press enter."
-  puts "Press return without entering another name to finish."
+  puts "Press return without entering another name to finish. \n"
   #Add a name if desired, and then keep adding names if desired
   name = STDIN.gets.delete("\n")
   until name.empty?
-    month = STDIN.gets.delete("\n").to_sym
+    puts "Second, enter their cohort month, or hit return for current month \n"
+    month = STDIN.gets.delete("\n").downcase.to_sym
+    puts "Current month selected by default" if month.empty?
+    month = @cohorts[@default_month - 1] if month.empty?
+    until @cohorts.include? month
+      puts "Cohort month invalid (typos possible). Try again \n"
+      month = STDIN.gets.delete("\n").downcase.to_sym
+    end
+    puts "Third, enter a height(cm) and press enter. \n"
     height = STDIN.gets.delete("\n").to_sym
     @villains << {name: name, month: month, height: height}
     #Update the user, and ask for the next name. Hit return to stop.
@@ -98,6 +121,7 @@ def save_students
     villain_data = [vil[:name], vil[:month], vil[:height]]
     villain_row = villain_data.join(", ")
     file.puts villain_row
+    puts "Current list saved to file"
   end
   file.close
 end
@@ -107,8 +131,8 @@ def load_students(filename = "Villains2.csv")
  @villains = []
  file = File.open(filename, "r")
  file.readlines.each do |vil|
-   name, month = vil.chomp.split(", ")
-   @villains << {name: name, month: month.to_sym}
+   name, month, height = vil.chomp.split(", ")
+   @villains << {name: name, month: month.to_sym, height: height}
    end
  file.close
 end
@@ -133,17 +157,18 @@ def interactive_menu
   #until 'exit' is chosen
   loop do
     puts "What do you wish to do? Enter the number of your desired action"
-    puts "----------------------"
-    puts "1:List| 2:Add | 3:Save | 4:Load | 5:List(shorter than 12 chars)"
-    puts "6:By letter | 7:By cohort | 8:? | 9:Exit"
+    puts "---------------------------------------------------------------"
+    puts "1:List all  | 2:Add | 3:Save | 4:Load | 5:List names < 12 chars"
+    puts "6:By letter | 7:By cohort    | 8:?    | 9:Exit "
+    puts " "
 
-    choice = STDIN.gets.delete("\n") #An alternative to .chomp! (task 10)
+    choice = STDIN.gets.delete("\n") #Alternative to .chomp again! (task 10)
+    puts "\n \n"
     case choice
     #Print the directory if user asks to list students
     when "1"
       print_header
-      #A bit of code for when the list is empty (step 8, task 12)
-      puts "Nothing to see here :/".center(50) if @villains.empty?
+      empty_list
       print_list
       footer
     #Run the procedure for adding students if user asks to add students
@@ -157,17 +182,29 @@ def interactive_menu
       load_students
     #Exit the program by breaking the loop if users asks to exit
     when "5"
+      print_header
+      empty_list
       print_short
+      footer
     when "6"
+      puts "Type a starting letter to select names by."
       print_by_letter
+      empty_list
+      footer
     when "7"
-      print_cohort
+      print_header
+      empty_list
+      print_cohorts
+      footer
+    when "8"
+      puts "????????????"
     when "9"
       break
     else
       nil
     end
-    puts "\n \n"
+    puts " "
+    puts "Request processed.\n"
   end
 end
 
