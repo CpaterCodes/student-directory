@@ -58,13 +58,13 @@ end
 def save
   puts "Name the file you wish to save to."
   filename = STDIN.gets.chomp
-  file = File.open(filename, "w")
-  @villains.each do |vil|
-    villain_data = [vil[:name], vil[:month], vil[:height]]
-    villain_row = villain_data.join(", ")
-    file.puts villain_row
+  file = File.open(filename, "w") do |f|
+    @villains.each do |vil|
+      villain_data = [vil[:name], vil[:month], vil[:height]]
+      villain_row = villain_data.join(", ")
+      f.puts villain_row
+    end
   end
-  file.close
 end
 
 
